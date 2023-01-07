@@ -14,7 +14,7 @@ const App = () => {
     const [movies, setMovies] = useState([]);
 
     function getObj(i){
-        fetch(API_URL + i)
+        fetch(API_URL2 + i)
             .then(res => res.json())
             .then(res => {return(res.json)})
             .catch(err => { throw err });
@@ -27,7 +27,7 @@ const App = () => {
     const searchMovies = async (title) => {
         fetch(API_URL + title)
             .then(res => res.json())
-            .then(out => setMovies(out.objectIDs))
+            .then(out => setMovies(getObj(out.objectIDs)))
             .catch(err => { throw err });
     };
 
