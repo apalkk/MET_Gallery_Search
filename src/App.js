@@ -13,11 +13,19 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [movies, setMovies] = useState([]);
 
-    function getObj(i){
-        fetch(API_URL2 + i)
-            .then(res => res.json())
-            .then(res => {return(res.json)})
-            .catch(err => { throw err });
+    function getter(int){
+        fetch(API_URL2 + int)
+             //.then(res => res.json())
+             .then(res => console.log(res.json()))
+             .catch(err => { throw err });
+    }
+
+    function getObj(arr){
+        let new_arr = new Array(arr.length)
+        for (let j = 0;j<arr.length;j++){
+            new_arr[j] = getter(arr[j])
+        }
+        return new_arr
     }
 
     useEffect(() => {
