@@ -38,7 +38,7 @@ async function getAndSetMovies(output){
 
 console.log({output});
 
-const firstTen = output.objectIDs.slice(0, 10);
+const firstTen = output.objectIDs.slice(0, 100);
 
 const movieInfoForFirstTen = await Promise.all(firstTen.map(async (thing) => {
 
