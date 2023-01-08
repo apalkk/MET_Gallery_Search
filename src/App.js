@@ -72,7 +72,7 @@ return (
 
 <div className="app">
 
-<h1>MovieLand</h1>
+<h1>The MET Gallery</h1>
 
 <div className="search">
 
@@ -82,7 +82,7 @@ value={searchTerm}
 
 onChange={(e) => setSearchTerm(e.target.value)}
 
-placeholder="Search for movies"
+placeholder="Search here"
 
 />
 
@@ -118,7 +118,7 @@ onClick={() => searchMovies(searchTerm)}
 
 <div className="empty">
 
-<h2>No movies found</h2>
+<h2>Not found</h2>
 
 </div>
 
