@@ -1,76 +1,133 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import MovieCard from "./MovieCard";
+
 import SearchIcon from "./search.svg";
+
 import "./App.css";
 
-let req = new XMLHttpRequest();
-
 const API_URL = "https://collectionapi.metmuseum.org/public/collection/v1/search?q="
+
 const API_URL2= "https://collectionapi.metmuseum.org/public/collection/v1/objects/"
 
 const App = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [movies, setMovies] = useState([]);
 
-    function getter(int){
-        fetch(API_URL2 + int)
-             //.then(res => res.json())
-             .then(res => console.log(res.json()))
-             .catch(err => { throw err });
-    }
+const [searchTerm, setSearchTerm] = useState("star wars");
 
-    function getObj(arr){
-        let new_arr = new Array(arr.length)
-        for (let j = 0;j<arr.length;j++){
-            new_arr[j] = getter(arr[j])
-        }
-        return new_arr
-    }
+const [movies, setMovies] = useState([]);
 
-    useEffect(() => {
-        searchMovies("Search");
-    }, []);
+const searchMovies = useCallback(async (title) => {
 
-    const searchMovies = async (title) => {
-        fetch(API_URL + title)
-            .then(res => res.json())
-            .then(out => setMovies(getObj(out.objectIDs)))
-            .catch(err => { throw err });
-    };
+async function getter(int){
 
-    return (
-        <div className="app">
-            <h1>MET Gallery Search</h1>
+let data;
 
-            <div className="search">
-                <input
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search for movies"
-                />
-                <img
-                    src={SearchIcon}
-                    alt="search"
-                    onClick={() => searchMovies(searchTerm)}
-                />
-            </div>
+await fetch(API_URL2 + int)
 
-            {movies?.length > 0 ? (
-                <div className="container" >
-                    {movies.map((movie,index) => (
-                        <div key={index}>
-                        <MovieCard movie={movie} />
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <div className="empty">
-                    <h2>No movies found</h2>
-                </div>
-            )}
-        </div>
-    );
+.then(res => res.json())
+
+.then(res => data = res)
+
+.catch(err => { throw err });
+
+return data;
+
+}
+
+async function getAndSetMovies(output){
+
+console.log({output});
+
+const firstTen = output.objectIDs.slice(0, 10);
+
+const movieInfoForFirstTen = await Promise.all(firstTen.map(async (thing) => {
+
+const metaDataAboutThing = await getter(thing);
+
+return metaDataAboutThing;
+
+}));
+
+setMovies(movieInfoForFirstTen);
+
+};
+
+return fetch(API_URL + title)
+
+.then(res => res.json())
+
+.then(out => getAndSetMovies(out))
+
+.catch(err => { throw err });
+
+}, []);
+
+useEffect(() => {
+
+searchMovies(searchTerm);
+
+}, [searchMovies, searchTerm]);
+
+return (
+
+<div className="app">
+
+<h1>MovieLand</h1>
+
+<div className="search">
+
+<input
+
+value={searchTerm}
+
+onChange={(e) => setSearchTerm(e.target.value)}
+
+placeholder="Search for movies"
+
+/>
+
+<img
+
+src={SearchIcon}
+
+alt="search"
+
+onClick={() => searchMovies(searchTerm)}
+
+/>
+
+</div>
+
+{movies?.length > 0 ? (
+
+<div className="container" >
+
+{movies.map((movie,index) => (
+
+<div key={index}>
+
+<MovieCard movie={movie} />
+
+</div>
+
+))}
+
+</div>
+
+) : (
+
+<div className="empty">
+
+<h2>No movies found</h2>
+
+</div>
+
+)}
+
+</div>
+
+);
+
 };
 
 export default App;
