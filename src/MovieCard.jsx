@@ -11,6 +11,7 @@ return (
 <div>
 
 <p>{movie?.objectName}</p>
+<p>{movie?.artistDisplayName}</p>
 
 </div>
 
